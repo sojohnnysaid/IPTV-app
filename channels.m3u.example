@@ -1,0 +1,5 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="1" tvg-name="Example Channel 1" tvg-logo="" tvg-chno="101" group-title="Live",Example Channel 1
+http://example.com/stream1
+#EXTINF:-1 tvg-id="2" tvg-name="Example Channel 2" tvg-logo="" tvg-chno="102" group-title="Live",Example Channel 2
+http://example.com/stream2

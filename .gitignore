@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Playlist files (personal data)
+channels.m3u
+*.m3u
+*.m3u8
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
