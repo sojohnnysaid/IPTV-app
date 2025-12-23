@@ -24,6 +24,9 @@
             --text-secondary: rgba(255,255,255,0.6);
             --accent: #0a84ff;
             --accent-hover: #409cff;
+            --success: #30d158;
+            --warning: #ff9f0a;
+            --danger: #ff453a;
         }
 
         body {
@@ -32,6 +35,545 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             overflow: hidden;
             height: 100vh;
+        }
+
+        /* ========== SETUP SCREEN ========== */
+        #setup {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            transition: opacity 0.4s ease;
+        }
+
+        #setup.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .setup-container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .setup-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .setup-container h1 {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .setup-container p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+
+        .upload-zone {
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 60px 40px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--accent);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        .upload-zone svg {
+            width: 64px;
+            height: 64px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .upload-zone h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .upload-zone p {
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .setup-or {
+            color: var(--text-secondary);
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .setup-url-input {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .setup-url-input input {
+            flex: 1;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--bg-tertiary);
+            color: white;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .setup-url-input input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* ========== CATEGORY EDITOR ========== */
+        #category-editor {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 250;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #category-editor.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .editor-header {
+            padding: 24px 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .editor-header h2 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .editor-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px 40px;
+        }
+
+        .editor-section {
+            margin-bottom: 40px;
+        }
+
+        .editor-section h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .category-edit-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--bg-secondary);
+            border-radius: 14px;
+            transition: background 0.15s ease;
+        }
+
+        .category-edit-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .category-emoji-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: 2px dashed rgba(255,255,255,0.2);
+            background: transparent;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .category-emoji-btn:hover {
+            border-color: var(--accent);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        .category-emoji-btn.has-emoji {
+            border-style: solid;
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .category-edit-name {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 16px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .category-edit-name:focus {
+            border-color: var(--accent);
+        }
+
+        .category-count {
+            font-size: 14px;
+            color: var(--text-secondary);
+            min-width: 80px;
+            text-align: right;
+        }
+
+        .category-delete-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .category-delete-btn:hover {
+            background: rgba(255, 69, 58, 0.2);
+            color: var(--danger);
+        }
+
+        .add-category-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 16px;
+            background: transparent;
+            border: 2px dashed rgba(255,255,255,0.15);
+            border-radius: 14px;
+            color: var(--text-secondary);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            width: 100%;
+        }
+
+        .add-category-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(10, 132, 255, 0.05);
+        }
+
+        /* Channel Assignment */
+        .channel-assignment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .channel-search {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            width: 280px;
+        }
+
+        .channel-search:focus {
+            border-color: var(--accent);
+        }
+
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--accent);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: all 0.2s ease;
+        }
+
+        .bulk-actions.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .bulk-actions-text {
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .bulk-actions select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.3);
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            min-width: 160px;
+            cursor: pointer;
+        }
+
+        .bulk-actions select option {
+            background: var(--bg-secondary);
+            color: white;
+        }
+
+        .bulk-actions button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            background: white;
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+        }
+
+        .bulk-actions button:hover {
+            opacity: 0.9;
+        }
+
+        .bulk-clear-btn {
+            background: rgba(255,255,255,0.2) !important;
+            color: white !important;
+        }
+
+        .select-all-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .select-all-row label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .channel-assignment-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .channel-assignment-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            transition: background 0.15s ease;
+            cursor: pointer;
+        }
+
+        .channel-assignment-item:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .channel-assignment-item.selected {
+            background: rgba(10, 132, 255, 0.15);
+            border: 1px solid rgba(10, 132, 255, 0.3);
+        }
+
+        .channel-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .channel-assignment-number {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.4);
+            width: 50px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .channel-assignment-name {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-category-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.1);
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .channel-category-badge.has-category {
+            background: rgba(10, 132, 255, 0.2);
+            color: var(--accent);
+        }
+
+        .channel-assignment-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .channel-assignment-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .channel-assignment-list::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.15);
+            border-radius: 3px;
+        }
+
+        /* Emoji Picker */
+        .emoji-picker-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .emoji-picker-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .emoji-picker {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 20px;
+            max-width: 360px;
+            width: 90%;
+        }
+
+        .emoji-picker h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .emoji-option {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.1s ease;
+        }
+
+        .emoji-option:hover {
+            background: rgba(255,255,255,0.1);
         }
 
         /* ========== SPLASH SCREEN ========== */
@@ -58,9 +600,12 @@
             position: sticky;
             top: 0;
             z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
 
-        .splash-header h1 {
+        .splash-header-text h1 {
             font-size: 56px;
             font-weight: 800;
             letter-spacing: -2px;
@@ -70,11 +615,39 @@
             background-clip: text;
         }
 
-        .splash-header p {
+        .splash-header-text p {
             font-size: 20px;
             color: var(--text-secondary);
             margin-top: 8px;
             font-weight: 500;
+        }
+
+        .splash-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
         }
 
         .splash-content {
@@ -96,6 +669,7 @@
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: var(--bg-secondary);
         }
 
         .category-card:hover {
@@ -111,6 +685,7 @@
             position: absolute;
             inset: 0;
             opacity: 0.9;
+            background: linear-gradient(135deg, var(--cat-color-1, #1a5f2a) 0%, var(--cat-color-2, #2d8f4e) 50%, var(--cat-color-3, #134d22) 100%);
         }
 
         .category-card-content {
@@ -140,20 +715,6 @@
             margin-top: 4px;
         }
 
-        /* Category gradients */
-        .cat-sports .category-card-bg { background: linear-gradient(135deg, #1a5f2a 0%, #2d8f4e 50%, #134d22 100%); }
-        .cat-news .category-card-bg { background: linear-gradient(135deg, #8b1538 0%, #c41e3a 50%, #6b1028 100%); }
-        .cat-movies .category-card-bg { background: linear-gradient(135deg, #1a1a4e 0%, #2d2d8f 50%, #13134d 100%); }
-        .cat-entertainment .category-card-bg { background: linear-gradient(135deg, #4a1a5f 0%, #8f2db0 50%, #3d134d 100%); }
-        .cat-kids .category-card-bg { background: linear-gradient(135deg, #c45c26 0%, #f4a460 50%, #a04820 100%); }
-        .cat-local .category-card-bg { background: linear-gradient(135deg, #1a4a5f 0%, #2d8f9f 50%, #134050 100%); }
-        .cat-international .category-card-bg { background: linear-gradient(135deg, #5f4a1a 0%, #9f8f2d 50%, #504013 100%); }
-        .cat-music .category-card-bg { background: linear-gradient(135deg, #5f1a4a 0%, #d63384 50%, #4d1340 100%); }
-        .cat-religious .category-card-bg { background: linear-gradient(135deg, #3d3d1a 0%, #8b8b2d 50%, #2d2d13 100%); }
-        .cat-shopping .category-card-bg { background: linear-gradient(135deg, #1a5f5f 0%, #2d9f8f 50%, #134d4d 100%); }
-        .cat-variety .category-card-bg { background: linear-gradient(135deg, #4a3d5f 0%, #7b6b9f 50%, #3d3050 100%); }
-
-        /* Browse all button */
         .browse-all {
             display: flex;
             align-items: center;
@@ -195,7 +756,6 @@
             pointer-events: auto;
         }
 
-        /* Sidebar */
         #sidebar {
             width: 360px;
             background: rgba(28, 28, 30, 0.98);
@@ -215,12 +775,6 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-        }
-
-        .sidebar-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
         }
 
         .sidebar-title h1 {
@@ -372,7 +926,6 @@
             50% { opacity: 0.6; transform: scale(0.9); }
         }
 
-        /* Main content */
         #main {
             flex: 1;
             display: flex;
@@ -452,7 +1005,6 @@
             font-weight: 500;
         }
 
-        /* Now playing bar */
         #now-playing {
             padding: 20px 28px;
             min-height: 80px;
@@ -509,7 +1061,6 @@
             height: 22px;
         }
 
-        /* Category button (in controls) */
         .category-btn {
             background: var(--accent) !important;
         }
@@ -626,6 +1177,132 @@
             margin-top: 4px;
         }
 
+        /* ========== SETTINGS MODAL ========== */
+        #settings-modal, #replace-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(20px);
+            z-index: 250;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        #settings-modal.active, #replace-modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+        }
+
+        .settings-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .settings-info {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .settings-option {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            margin-bottom: 8px;
+        }
+
+        .settings-option:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .settings-option.danger:hover {
+            background: rgba(255, 69, 58, 0.15);
+        }
+
+        .settings-option.danger .settings-option-icon {
+            color: var(--danger);
+        }
+
+        .settings-option.danger h4 {
+            color: var(--danger);
+        }
+
+        .settings-option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .settings-option-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .settings-option-text {
+            flex: 1;
+        }
+
+        .settings-option-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .settings-option-text p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .settings-chevron {
+            width: 20px;
+            height: 20px;
+            color: var(--text-secondary);
+        }
+
+        .replace-options {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .replace-option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .replace-option-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1200px) {
             .splash-header, .splash-content {
@@ -638,7 +1315,7 @@
         }
 
         @media (max-width: 768px) {
-            .splash-header h1 {
+            .splash-header-text h1 {
                 font-size: 36px;
             }
             #sidebar {
@@ -648,11 +1325,105 @@
     </style>
 </head>
 <body>
+    <!-- SETUP SCREEN -->
+    <div id="setup" class="hidden">
+        <div class="setup-container">
+            <div class="setup-icon">📺</div>
+            <h1>Welcome to Live TV</h1>
+            <p>Upload your M3U playlist to get started</p>
+
+            <div class="upload-zone" id="upload-zone">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <h3>Drop your .m3u file here</h3>
+                <p>or click to browse</p>
+            </div>
+            <input type="file" id="file-input" accept=".m3u,.m3u8">
+
+            <div class="setup-or">or enter URL</div>
+
+            <div class="setup-url-input">
+                <input type="text" id="url-input" placeholder="https://example.com/playlist.m3u">
+                <button class="btn btn-primary" id="load-url-btn">Load</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CATEGORY EDITOR -->
+    <div id="category-editor">
+        <div class="editor-header">
+            <h2>Manage Categories</h2>
+            <div class="editor-actions">
+                <button class="btn btn-secondary" id="editor-cancel-btn">Cancel</button>
+                <button class="btn btn-primary" id="editor-save-btn">Save Changes</button>
+            </div>
+        </div>
+        <div class="editor-content">
+            <div class="editor-section">
+                <h3>Categories</h3>
+                <div class="category-list" id="category-edit-list"></div>
+                <button class="add-category-btn" id="add-category-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    Add Category
+                </button>
+            </div>
+            <div class="editor-section">
+                <div class="channel-assignment-header">
+                    <h3>Channel Assignments</h3>
+                    <input type="text" class="channel-search" id="channel-assignment-search" placeholder="Search channels...">
+                </div>
+                <div class="bulk-actions" id="bulk-actions">
+                    <span class="bulk-actions-text" id="bulk-actions-text">0 selected</span>
+                    <select id="bulk-category-select">
+                        <option value="">-- Select Category --</option>
+                    </select>
+                    <button id="bulk-assign-btn">Assign</button>
+                    <button class="bulk-clear-btn" id="bulk-clear-btn">Clear</button>
+                </div>
+                <div class="select-all-row">
+                    <label>
+                        <input type="checkbox" class="channel-checkbox" id="select-all-checkbox">
+                        Select All
+                    </label>
+                </div>
+                <div class="channel-assignment-list" id="channel-assignment-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMOJI PICKER -->
+    <div class="emoji-picker-overlay" id="emoji-picker-overlay">
+        <div class="emoji-picker">
+            <h4>Choose an emoji</h4>
+            <div class="emoji-grid" id="emoji-grid"></div>
+        </div>
+    </div>
+
     <!-- SPLASH SCREEN -->
-    <div id="splash">
+    <div id="splash" class="hidden">
         <div class="splash-header">
-            <h1>Live TV</h1>
-            <p>Choose a category to start watching</p>
+            <div class="splash-header-text">
+                <h1>Live TV</h1>
+                <p>Choose a category to start watching</p>
+            </div>
+            <div class="splash-actions">
+                <button class="icon-btn" id="settings-btn" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="edit-categories-btn" title="Edit Categories">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
         <div class="splash-content">
             <div class="category-grid" id="category-grid"></div>
@@ -761,34 +1532,194 @@
         </div>
     </div>
 
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <button class="modal-close" id="settings-modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Playlist</h3>
+                    <p class="settings-info" id="playlist-info">0 channels loaded</p>
+
+                    <div class="settings-option" id="replace-playlist-btn">
+                        <div class="settings-option-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                        </div>
+                        <div class="settings-option-text">
+                            <h4>Replace Playlist</h4>
+                            <p>Upload a new M3U file (keeps your categories)</p>
+                        </div>
+                        <svg class="settings-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+
+                    <div class="settings-option danger" id="reset-app-btn">
+                        <div class="settings-option-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                        </div>
+                        <div class="settings-option-text">
+                            <h4>Reset App</h4>
+                            <p>Clear all data and start fresh</p>
+                        </div>
+                        <svg class="settings-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REPLACE PLAYLIST MODAL -->
+    <div id="replace-modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header">
+                <h2>Replace Playlist</h2>
+                <button class="modal-close" id="replace-modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-zone" id="replace-upload-zone" style="margin-bottom: 20px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    <h3>Drop your .m3u file here</h3>
+                    <p>or click to browse</p>
+                </div>
+                <input type="file" id="replace-file-input" accept=".m3u,.m3u8" style="display: none;">
+
+                <div class="setup-or">or enter URL</div>
+
+                <div class="setup-url-input">
+                    <input type="text" id="replace-url-input" placeholder="https://example.com/playlist.m3u">
+                    <button class="btn btn-primary" id="replace-load-url-btn">Load</button>
+                </div>
+
+                <div class="replace-options">
+                    <label class="replace-option-label">
+                        <input type="checkbox" id="keep-categories-checkbox" checked>
+                        <span>Keep existing categories and try to match channels</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // ========== CATEGORY DATA ==========
-        const CATEGORIES = [
-            { id: 'sports', name: 'Sports', icon: '🏈', class: 'cat-sports', channels: [104, 105, 113, 122, 123, 140, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 169, 170, 178, 197, 200, 201, 202, 213, 216, 217, 218, 219, 220, 222, 223, 224, 234, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 255, 262, 263, 264, 265, 266, 301, 302, 303, 401, 402, 403, 404, 405, 406, 407, 518, 525, 526, 527, 528, 573, 577, 578, 610, 663, 679, 680, 681, 693, 784, 823, 849, 850, 851, 852, 920, 954, 960, 989, 990, 994, 995, 998, 1015, 1016, 1025, 1046, 1093] },
-            { id: 'news', name: 'News & Business', icon: '📰', class: 'cat-news', channels: [103, 110, 114, 117, 118, 126, 127, 167, 168, 190, 208, 221, 256, 504, 535, 536, 537, 572, 582, 583, 584, 585, 586, 587, 588, 609, 616, 688, 689, 690, 691, 692, 695, 803, 804, 825, 831, 834, 843, 844, 845, 846, 847, 848, 905, 906, 912, 963, 984, 1042, 1125, 1140, 1143] },
-            { id: 'movies', name: 'Movies', icon: '🎬', class: 'cat-movies', channels: [106, 124, 173, 182, 183, 184, 185, 186, 187, 191, 194, 203, 205, 235, 236, 248, 258, 259, 267, 507, 551, 615, 621, 622, 623, 624, 625, 626, 627, 629, 636, 684, 717, 885, 886, 887, 888, 890, 907, 936, 956, 957, 997, 1000, 1002, 1010, 1024, 1028, 1137, 1141, 1142] },
-            { id: 'entertainment', name: 'Entertainment', icon: '🎭', class: 'cat-entertainment', channels: [101, 107, 108, 116, 125, 128, 129, 132, 133, 135, 139, 171, 174, 175, 176, 177, 179, 180, 181, 188, 189, 192, 193, 195, 228, 229, 230, 232, 233, 249, 250, 251, 254, 257, 260, 261, 268, 272, 274, 275, 563, 635, 636, 640, 641, 650, 697, 715, 716, 721, 723, 724, 737, 744, 785, 824, 913, 934, 966, 968, 987, 1055] },
-            { id: 'kids', name: 'Kids & Family', icon: '🧸', class: 'cat-kids', channels: [115, 119, 134, 136, 137, 138, 225, 226, 227, 252, 270, 561, 593, 604, 655, 656, 657, 788, 853, 854, 855, 856, 882, 883, 980, 981, 982, 1049, 1138] },
-            { id: 'local', name: 'Local Networks', icon: '📺', class: 'cat-local', channels: [102, 120, 121, 130, 131, 165, 166, 214, 215, 231, 276, 503, 639, 642, 652, 653, 687, 756, 757, 758, 760, 761, 763, 764, 765, 766, 767, 769, 770, 771, 772, 773, 774, 775, 776, 777, 778, 779, 780, 781, 830, 833, 836, 837, 838, 839, 840, 841, 842, 1038, 1044, 1047, 1048, 1050, 1051, 1052, 1053, 1054, 1056, 1057, 1058, 1059, 1060, 1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1070, 1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090, 1091, 1092, 1094, 1095, 1096, 1097, 1098, 1099, 1100, 1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112, 1113, 1114, 1115, 1116, 1117, 1118, 1121, 1122, 1124, 1129, 1130, 1139] },
-            { id: 'international', name: 'International', icon: '🌍', class: 'cat-international', channels: [109, 141, 253, 271, 502, 505, 506, 508, 512, 513, 520, 521, 529, 530, 531, 534, 539, 540, 541, 542, 543, 544, 546, 547, 548, 549, 550, 555, 556, 558, 560, 562, 643, 644, 645, 654, 662, 664, 666, 669, 694, 699, 700, 718, 719, 725, 735, 751, 754, 759, 762, 768, 782, 786, 787, 789, 802, 814, 815, 816, 817, 820, 828, 829, 832, 858, 859, 860, 861, 862, 863, 864, 865, 866, 867, 871, 872, 873, 874, 875, 876, 877, 878, 879, 880, 881, 901, 923, 924, 925, 926, 927, 932, 942, 950, 951, 952, 953, 964, 969, 975, 976, 991, 992, 993, 1030, 1031, 1033, 1037, 1039, 1041, 1123, 1127, 1128, 1131, 1132, 1135, 1144] },
-            { id: 'music', name: 'Music', icon: '🎵', class: 'cat-music', channels: [111, 112, 209, 210, 273, 591, 596, 602, 628, 631, 632, 633, 805, 959, 983, 986, 1008, 1034, 1035, 1119, 1136] },
-            { id: 'religious', name: 'Religious', icon: '⛪', class: 'cat-religious', channels: [500, 501, 510, 511, 532, 533, 538, 545, 606, 607, 608, 613, 660, 661, 671, 672, 673, 674, 675, 676, 701, 704, 711, 712, 713, 714, 720, 728, 729, 730, 731, 736, 738, 745, 746, 753, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 806, 807, 808, 809, 810, 813, 819, 822, 857, 891, 892, 893, 894, 895, 903, 904, 915, 916, 917, 918, 931, 937, 938, 939, 940, 943, 944, 945, 946, 947, 948, 971, 972, 973, 974, 985] },
-            { id: 'shopping', name: 'Shopping', icon: '🛍️', class: 'cat-shopping', channels: [702, 732, 733, 734, 739, 750, 752, 897, 898, 899, 900, 928, 929, 970] },
-            { id: 'variety', name: 'Variety', icon: '🎪', class: 'cat-variety', channels: [514, 515, 516, 517, 519, 522, 523, 524, 564, 565, 566, 567, 568, 569, 570, 571, 589, 590, 611, 617, 618, 630, 634, 637, 646, 647, 648, 651, 665, 682, 698, 703, 707, 708, 722, 727, 740, 741, 742, 743, 790, 826, 827, 914, 930, 933, 958, 965, 977, 978, 979, 996, 999, 1001, 1003, 1004, 1005, 1006, 1007, 1009, 1011, 1012, 1013, 1014, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1026, 1120, 1126] }
+        // ========== EMOJI OPTIONS ==========
+        const EMOJIS = ['📺','🏈','⚽','🏀','🎾','📰','💼','🎬','🍿','🎭','🎪','🧸','👶','📻','🎵','🎤','⛪','✝️','🛍️','🛒','🌍','🌎','🗞️','🎮','🎯','🎨','📡','🔴','▶️','⭐','❤️','🔥'];
+
+        // ========== COLOR PALETTES ==========
+        const COLOR_PALETTES = [
+            ['#1a5f2a', '#2d8f4e', '#134d22'],
+            ['#8b1538', '#c41e3a', '#6b1028'],
+            ['#1a1a4e', '#2d2d8f', '#13134d'],
+            ['#4a1a5f', '#8f2db0', '#3d134d'],
+            ['#c45c26', '#f4a460', '#a04820'],
+            ['#1a4a5f', '#2d8f9f', '#134050'],
+            ['#5f4a1a', '#9f8f2d', '#504013'],
+            ['#5f1a4a', '#d63384', '#4d1340'],
+            ['#3d3d1a', '#8b8b2d', '#2d2d13'],
+            ['#1a5f5f', '#2d9f8f', '#134d4d'],
+            ['#4a3d5f', '#7b6b9f', '#3d3050'],
+            ['#5f2a2a', '#9f4a4a', '#4d1a1a']
         ];
 
         // ========== STATE ==========
         let allChannels = [];
+        let categories = [];
         let filteredChannels = [];
         let selectedIndex = 0;
         let currentChannel = null;
         let currentCategoryId = null;
+        let editingCategories = [];
+        let editingChannelAssignments = {};
+        let channelAssignmentFilter = '';
+        let selectedChannels = new Set();
+        let emojiPickerCallback = null;
+
+        // ========== STORAGE ==========
+        const STORAGE_KEY = 'iptv_app_data';
+
+        function saveData() {
+            const data = {
+                channels: allChannels,
+                categories: categories
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function loadData() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    const data = JSON.parse(stored);
+                    allChannels = data.channels || [];
+                    categories = data.categories || [];
+                    return true;
+                } catch (e) {
+                    console.error('Failed to load data:', e);
+                }
+            }
+            return false;
+        }
+
+        function clearData() {
+            localStorage.removeItem(STORAGE_KEY);
+            allChannels = [];
+            categories = [];
+        }
 
         // ========== DOM ELEMENTS ==========
+        const setup = document.getElementById('setup');
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+        const urlInput = document.getElementById('url-input');
+        const loadUrlBtn = document.getElementById('load-url-btn');
+
+        const categoryEditor = document.getElementById('category-editor');
+        const categoryEditList = document.getElementById('category-edit-list');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const editorCancelBtn = document.getElementById('editor-cancel-btn');
+        const editorSaveBtn = document.getElementById('editor-save-btn');
+        const channelAssignmentList = document.getElementById('channel-assignment-list');
+        const channelAssignmentSearch = document.getElementById('channel-assignment-search');
+        const bulkActions = document.getElementById('bulk-actions');
+        const bulkActionsText = document.getElementById('bulk-actions-text');
+        const bulkCategorySelect = document.getElementById('bulk-category-select');
+        const bulkAssignBtn = document.getElementById('bulk-assign-btn');
+        const bulkClearBtn = document.getElementById('bulk-clear-btn');
+        const selectAllCheckbox = document.getElementById('select-all-checkbox');
+
+        const emojiPickerOverlay = document.getElementById('emoji-picker-overlay');
+        const emojiGrid = document.getElementById('emoji-grid');
+
         const splash = document.getElementById('splash');
-        const app = document.getElementById('app');
         const categoryGrid = document.getElementById('category-grid');
         const browseAllBtn = document.getElementById('browse-all-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const editCategoriesBtn = document.getElementById('edit-categories-btn');
+
+        const app = document.getElementById('app');
         const backBtn = document.getElementById('back-btn');
         const categoryBadge = document.getElementById('current-category-badge');
         const categoryIcon = document.getElementById('current-category-icon');
@@ -810,20 +1741,456 @@
         const modalClose = document.getElementById('modal-close');
         const modalGrid = document.getElementById('modal-grid');
 
-        // ========== SPLASH SCREEN ==========
-        function renderSplash() {
-            categoryGrid.innerHTML = CATEGORIES.map(cat => `
-                <div class="category-card ${cat.class}" data-category="${cat.id}">
-                    <div class="category-card-bg"></div>
-                    <div class="category-card-content">
-                        <div class="category-icon">${cat.icon}</div>
-                        <h3>${cat.name}</h3>
-                        <p>${cat.channels.length} channels</p>
-                    </div>
+        const settingsModal = document.getElementById('settings-modal');
+        const settingsModalClose = document.getElementById('settings-modal-close');
+        const playlistInfo = document.getElementById('playlist-info');
+        const replacePlaylistBtn = document.getElementById('replace-playlist-btn');
+        const resetAppBtn = document.getElementById('reset-app-btn');
+
+        const replaceModal = document.getElementById('replace-modal');
+        const replaceModalClose = document.getElementById('replace-modal-close');
+        const replaceUploadZone = document.getElementById('replace-upload-zone');
+        const replaceFileInput = document.getElementById('replace-file-input');
+        const replaceUrlInput = document.getElementById('replace-url-input');
+        const replaceLoadUrlBtn = document.getElementById('replace-load-url-btn');
+        const keepCategoriesCheckbox = document.getElementById('keep-categories-checkbox');
+
+        // ========== M3U PARSER ==========
+        function parseM3U(content) {
+            const lines = content.split('\n');
+            const result = [];
+            let current = null;
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#EXTINF:')) {
+                    const chnoMatch = line.match(/tvg-chno="([^"]*)"/);
+                    const groupMatch = line.match(/group-title="([^"]*)"/);
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
+                    const tvgNameMatch = line.match(/tvg-name="([^"]*)"/);
+                    const lastCommaIdx = line.lastIndexOf(',');
+                    const displayName = lastCommaIdx !== -1 ? line.substring(lastCommaIdx + 1).trim() : '';
+
+                    current = {
+                        id: crypto.randomUUID(),
+                        name: displayName || (tvgNameMatch ? tvgNameMatch[1] : 'Unknown'),
+                        number: chnoMatch ? chnoMatch[1] : String(result.length + 1),
+                        group: groupMatch ? groupMatch[1] : 'Uncategorized',
+                        logo: logoMatch ? logoMatch[1] : ''
+                    };
+                } else if (line && !line.startsWith('#') && current) {
+                    current.url = line;
+                    result.push(current);
+                    current = null;
+                }
+            }
+            return result;
+        }
+
+        function extractCategories(channels) {
+            const groupMap = new Map();
+
+            channels.forEach(ch => {
+                const group = ch.group || 'Uncategorized';
+                if (!groupMap.has(group)) {
+                    groupMap.set(group, []);
+                }
+                groupMap.get(group).push(ch.number);
+            });
+
+            const cats = [];
+            let colorIdx = 0;
+            groupMap.forEach((channelNums, groupName) => {
+                cats.push({
+                    id: crypto.randomUUID(),
+                    name: groupName,
+                    emoji: guessEmoji(groupName),
+                    channels: channelNums,
+                    colors: COLOR_PALETTES[colorIdx % COLOR_PALETTES.length]
+                });
+                colorIdx++;
+            });
+
+            return cats;
+        }
+
+        function guessEmoji(groupName) {
+            const lower = groupName.toLowerCase();
+            if (lower.includes('sport')) return '🏈';
+            if (lower.includes('news')) return '📰';
+            if (lower.includes('movie') || lower.includes('film')) return '🎬';
+            if (lower.includes('kid') || lower.includes('child') || lower.includes('cartoon')) return '🧸';
+            if (lower.includes('music')) return '🎵';
+            if (lower.includes('religious') || lower.includes('faith') || lower.includes('church')) return '⛪';
+            if (lower.includes('entertainment')) return '🎭';
+            if (lower.includes('shop')) return '🛍️';
+            if (lower.includes('international') || lower.includes('world')) return '🌍';
+            if (lower.includes('local') || lower.includes('network')) return '📺';
+            if (lower.includes('live')) return '🔴';
+            return '📺';
+        }
+
+        // ========== SETUP SCREEN ==========
+        function showSetup() {
+            setup.classList.remove('hidden');
+            splash.classList.add('hidden');
+            app.classList.remove('active');
+        }
+
+        function hideSetup() {
+            setup.classList.add('hidden');
+        }
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) processFile(file);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) processFile(file);
+        });
+
+        loadUrlBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) return;
+
+            try {
+                loadUrlBtn.textContent = 'Loading...';
+                loadUrlBtn.disabled = true;
+                const response = await fetch(url);
+                const content = await response.text();
+                processM3UContent(content);
+            } catch (err) {
+                console.error('Failed to load URL:', err);
+                alert('Failed to load playlist from URL');
+            } finally {
+                loadUrlBtn.textContent = 'Load';
+                loadUrlBtn.disabled = false;
+            }
+        });
+
+        function processFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                processM3UContent(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function processM3UContent(content) {
+            allChannels = parseM3U(content);
+            categories = extractCategories(allChannels);
+
+            if (allChannels.length === 0) {
+                alert('No channels found in playlist');
+                return;
+            }
+
+            saveData();
+            hideSetup();
+            showSplash();
+            renderSplash();
+            renderModal();
+        }
+
+        // ========== CATEGORY EDITOR ==========
+        function showCategoryEditor() {
+            editingCategories = JSON.parse(JSON.stringify(categories));
+            // Build channel -> category mapping
+            editingChannelAssignments = {};
+            allChannels.forEach(ch => {
+                // Find which category this channel belongs to
+                const cat = editingCategories.find(c => c.channels.includes(ch.number));
+                editingChannelAssignments[ch.number] = cat ? cat.id : null;
+            });
+            channelAssignmentFilter = '';
+            channelAssignmentSearch.value = '';
+            selectedChannels = new Set();
+            selectAllCheckbox.checked = false;
+            renderCategoryEditor();
+            renderChannelAssignments();
+            updateBulkActions();
+            categoryEditor.classList.add('active');
+        }
+
+        function hideCategoryEditor() {
+            categoryEditor.classList.remove('active');
+        }
+
+        function renderCategoryEditor() {
+            categoryEditList.innerHTML = editingCategories.map((cat, idx) => `
+                <div class="category-edit-item" data-idx="${idx}">
+                    <button class="category-emoji-btn ${cat.emoji ? 'has-emoji' : ''}" data-idx="${idx}">
+                        ${cat.emoji || '+'}
+                    </button>
+                    <input type="text" class="category-edit-name" value="${cat.name}" data-idx="${idx}">
+                    <span class="category-count">${cat.channels.length} channels</span>
+                    <button class="category-delete-btn" data-idx="${idx}" title="Delete category">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        </svg>
+                    </button>
                 </div>
             `).join('');
 
-            // Add click handlers
+            // Emoji buttons
+            categoryEditList.querySelectorAll('.category-emoji-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.dataset.idx);
+                    showEmojiPicker((emoji) => {
+                        editingCategories[idx].emoji = emoji;
+                        renderCategoryEditor();
+                    });
+                };
+            });
+
+            // Name inputs
+            categoryEditList.querySelectorAll('.category-edit-name').forEach(input => {
+                input.oninput = () => {
+                    const idx = parseInt(input.dataset.idx);
+                    editingCategories[idx].name = input.value;
+                };
+            });
+
+            // Delete buttons
+            categoryEditList.querySelectorAll('.category-delete-btn').forEach(btn => {
+                btn.onclick = () => {
+                    const idx = parseInt(btn.dataset.idx);
+                    const catToDelete = editingCategories[idx];
+                    if (confirm(`Delete "${catToDelete.name}"? Channels will become uncategorized.`)) {
+                        // Clear assignments for channels in this category
+                        Object.keys(editingChannelAssignments).forEach(chNum => {
+                            if (editingChannelAssignments[chNum] === catToDelete.id) {
+                                editingChannelAssignments[chNum] = null;
+                            }
+                        });
+                        editingCategories.splice(idx, 1);
+                        renderCategoryEditor();
+                        renderChannelAssignments();
+                    }
+                };
+            });
+        }
+
+        addCategoryBtn.onclick = () => {
+            editingCategories.push({
+                id: crypto.randomUUID(),
+                name: 'New Category',
+                emoji: '📺',
+                channels: [],
+                colors: COLOR_PALETTES[editingCategories.length % COLOR_PALETTES.length]
+            });
+            renderCategoryEditor();
+            renderChannelAssignments();
+        };
+
+        editorCancelBtn.onclick = hideCategoryEditor;
+
+        editorSaveBtn.onclick = () => {
+            // Rebuild category channel lists based on assignments
+            editingCategories.forEach(cat => {
+                cat.channels = [];
+            });
+            Object.entries(editingChannelAssignments).forEach(([channelNum, catId]) => {
+                if (catId) {
+                    const cat = editingCategories.find(c => c.id === catId);
+                    if (cat) {
+                        cat.channels.push(channelNum);
+                    }
+                }
+            });
+            categories = editingCategories;
+            saveData();
+            hideCategoryEditor();
+            renderSplash();
+            renderModal();
+        };
+
+        // ========== CHANNEL ASSIGNMENTS ==========
+        function getFilteredChannelsList() {
+            const filter = channelAssignmentFilter.toLowerCase();
+            return allChannels.filter(ch =>
+                ch.name.toLowerCase().includes(filter) ||
+                ch.number.includes(filter)
+            );
+        }
+
+        function renderChannelAssignments() {
+            const filteredChannelsList = getFilteredChannelsList();
+
+            channelAssignmentList.innerHTML = filteredChannelsList.map(ch => {
+                const currentCatId = editingChannelAssignments[ch.number];
+                const cat = currentCatId ? editingCategories.find(c => c.id === currentCatId) : null;
+                const categoryLabel = cat ? `${cat.emoji || ''} ${cat.name}` : 'None';
+                const isSelected = selectedChannels.has(ch.number);
+
+                return `
+                    <div class="channel-assignment-item ${isSelected ? 'selected' : ''}" data-channel="${ch.number}">
+                        <input type="checkbox" class="channel-checkbox" data-channel="${ch.number}" ${isSelected ? 'checked' : ''}>
+                        <span class="channel-assignment-number">${ch.number}</span>
+                        <span class="channel-assignment-name">${ch.name}</span>
+                        <span class="channel-category-badge ${cat ? 'has-category' : ''}">${categoryLabel}</span>
+                    </div>
+                `;
+            }).join('');
+
+            // Add event listeners
+            channelAssignmentList.querySelectorAll('.channel-assignment-item').forEach(item => {
+                const checkbox = item.querySelector('.channel-checkbox');
+                const channelNum = item.dataset.channel;
+
+                // Click on row toggles checkbox
+                item.onclick = (e) => {
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    if (checkbox.checked) {
+                        selectedChannels.add(channelNum);
+                    } else {
+                        selectedChannels.delete(channelNum);
+                    }
+                    item.classList.toggle('selected', checkbox.checked);
+                    updateBulkActions();
+                    updateSelectAllState();
+                };
+            });
+
+            updateBulkCategoryOptions();
+        }
+
+        function updateBulkActions() {
+            const count = selectedChannels.size;
+            if (count > 0) {
+                bulkActions.classList.add('active');
+                bulkActionsText.textContent = `${count} channel${count > 1 ? 's' : ''} selected`;
+            } else {
+                bulkActions.classList.remove('active');
+            }
+        }
+
+        function updateBulkCategoryOptions() {
+            bulkCategorySelect.innerHTML = `
+                <option value="">-- Select Category --</option>
+                <option value="__none__">None (Remove from category)</option>
+                ${editingCategories.map(cat =>
+                    `<option value="${cat.id}">${cat.emoji || ''} ${cat.name}</option>`
+                ).join('')}
+            `;
+        }
+
+        function updateSelectAllState() {
+            const filteredChannelsList = getFilteredChannelsList();
+            const allSelected = filteredChannelsList.length > 0 &&
+                filteredChannelsList.every(ch => selectedChannels.has(ch.number));
+            selectAllCheckbox.checked = allSelected;
+        }
+
+        // Select all checkbox
+        selectAllCheckbox.onchange = () => {
+            const filteredChannelsList = getFilteredChannelsList();
+            if (selectAllCheckbox.checked) {
+                filteredChannelsList.forEach(ch => selectedChannels.add(ch.number));
+            } else {
+                filteredChannelsList.forEach(ch => selectedChannels.delete(ch.number));
+            }
+            renderChannelAssignments();
+            updateBulkActions();
+        };
+
+        // Bulk assign button
+        bulkAssignBtn.onclick = () => {
+            const catId = bulkCategorySelect.value;
+            if (!catId) {
+                alert('Please select a category');
+                return;
+            }
+
+            const assignValue = catId === '__none__' ? null : catId;
+            selectedChannels.forEach(channelNum => {
+                editingChannelAssignments[channelNum] = assignValue;
+            });
+
+            // Clear selection after assign
+            selectedChannels.clear();
+            selectAllCheckbox.checked = false;
+            renderChannelAssignments();
+            updateBulkActions();
+        };
+
+        // Clear selection button
+        bulkClearBtn.onclick = () => {
+            selectedChannels.clear();
+            selectAllCheckbox.checked = false;
+            renderChannelAssignments();
+            updateBulkActions();
+        };
+
+        channelAssignmentSearch.oninput = (e) => {
+            channelAssignmentFilter = e.target.value;
+            renderChannelAssignments();
+            updateSelectAllState();
+        };
+
+        // ========== EMOJI PICKER ==========
+        function showEmojiPicker(callback) {
+            emojiPickerCallback = callback;
+            emojiGrid.innerHTML = EMOJIS.map(e => `<button class="emoji-option">${e}</button>`).join('');
+            emojiGrid.querySelectorAll('.emoji-option').forEach(btn => {
+                btn.onclick = () => {
+                    if (emojiPickerCallback) {
+                        emojiPickerCallback(btn.textContent);
+                    }
+                    hideEmojiPicker();
+                };
+            });
+            emojiPickerOverlay.classList.add('active');
+        }
+
+        function hideEmojiPicker() {
+            emojiPickerOverlay.classList.remove('active');
+            emojiPickerCallback = null;
+        }
+
+        emojiPickerOverlay.onclick = (e) => {
+            if (e.target === emojiPickerOverlay) hideEmojiPicker();
+        };
+
+        // ========== SPLASH SCREEN ==========
+        function showSplash() {
+            splash.classList.remove('hidden');
+            app.classList.remove('active');
+        }
+
+        function renderSplash() {
+            categoryGrid.innerHTML = categories.map((cat, idx) => {
+                const colors = cat.colors || COLOR_PALETTES[idx % COLOR_PALETTES.length];
+                return `
+                    <div class="category-card" data-category="${cat.id}"
+                         style="--cat-color-1: ${colors[0]}; --cat-color-2: ${colors[1]}; --cat-color-3: ${colors[2]}">
+                        <div class="category-card-bg"></div>
+                        <div class="category-card-content">
+                            <div class="category-icon">${cat.emoji || '📺'}</div>
+                            <h3>${cat.name}</h3>
+                            <p>${cat.channels.length} channels</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
             categoryGrid.querySelectorAll('.category-card').forEach(card => {
                 card.onclick = () => selectCategory(card.dataset.category);
             });
@@ -838,9 +2205,9 @@
                 </div>
             `;
 
-            const categoryItems = CATEGORIES.map(cat => `
+            const categoryItems = categories.map(cat => `
                 <div class="modal-category-item" data-category="${cat.id}">
-                    <div class="icon">${cat.icon}</div>
+                    <div class="icon">${cat.emoji || '📺'}</div>
                     <h4>${cat.name}</h4>
                     <p>${cat.channels.length} channels</p>
                 </div>
@@ -865,11 +2232,11 @@
                 categoryIcon.textContent = '📺';
                 categoryName.textContent = 'All Channels';
             } else {
-                const category = CATEGORIES.find(c => c.id === categoryId);
+                const category = categories.find(c => c.id === categoryId);
                 if (category) {
                     const channelSet = new Set(category.channels.map(String));
                     filteredChannels = allChannels.filter(ch => channelSet.has(ch.number));
-                    categoryIcon.textContent = category.icon;
+                    categoryIcon.textContent = category.emoji || '📺';
                     categoryName.textContent = category.name;
                 }
             }
@@ -885,53 +2252,12 @@
             app.classList.add('active');
         }
 
-        function showSplash() {
-            splash.classList.remove('hidden');
-            app.classList.remove('active');
-            destroyPlayers();
-            player.src = '';
-            noChannel.style.display = 'block';
-            currentChannelEl.textContent = 'No channel selected';
-            currentGroupEl.textContent = '-';
-        }
-
         function openModal() {
             categoryModal.classList.add('active');
         }
 
         function closeModal() {
             categoryModal.classList.remove('active');
-        }
-
-        // ========== M3U PARSER ==========
-        function parseM3U(content) {
-            const lines = content.split('\n');
-            const result = [];
-            let current = null;
-
-            for (let line of lines) {
-                line = line.trim();
-                if (line.startsWith('#EXTINF:')) {
-                    const chnoMatch = line.match(/tvg-chno="([^"]*)"/);
-                    const groupMatch = line.match(/group-title="([^"]*)"/);
-                    const logoMatch = line.match(/tvg-logo="([^"]*)"/);
-                    const tvgNameMatch = line.match(/tvg-name="([^"]*)"/);
-                    const lastCommaIdx = line.lastIndexOf(',');
-                    const displayName = lastCommaIdx !== -1 ? line.substring(lastCommaIdx + 1).trim() : '';
-
-                    current = {
-                        name: displayName || (tvgNameMatch ? tvgNameMatch[1] : 'Unknown'),
-                        number: chnoMatch ? chnoMatch[1] : '',
-                        group: groupMatch ? groupMatch[1] : 'Uncategorized',
-                        logo: logoMatch ? logoMatch[1] : ''
-                    };
-                } else if (line && !line.startsWith('#') && current) {
-                    current.url = line;
-                    result.push(current);
-                    current = null;
-                }
-            }
-            return result;
         }
 
         // ========== CHANNEL LIST ==========
@@ -1035,7 +2361,6 @@
             }
         }
 
-        // Player events
         player.onplaying = () => loading.style.display = 'none';
         player.onwaiting = () => loading.style.display = 'block';
         player.onerror = () => loading.style.display = 'none';
@@ -1053,9 +2378,7 @@
         // ========== FULLSCREEN ==========
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                videoContainer.requestFullscreen().catch(err => {
-                    console.error('Fullscreen error:', err);
-                });
+                videoContainer.requestFullscreen().catch(err => console.error('Fullscreen error:', err));
             } else {
                 document.exitFullscreen();
             }
@@ -1069,19 +2392,14 @@
             fullscreenBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor">${icon}</svg>`;
         }
 
-        // Double-click video to toggle fullscreen
         videoContainer.addEventListener('dblclick', toggleFullscreen);
 
-        // Hide cursor in fullscreen after inactivity
         let cursorTimeout;
-
         function showCursor() {
             videoContainer.classList.remove('hide-cursor');
             clearTimeout(cursorTimeout);
             if (document.fullscreenElement) {
-                cursorTimeout = setTimeout(() => {
-                    videoContainer.classList.add('hide-cursor');
-                }, 2500);
+                cursorTimeout = setTimeout(() => videoContainer.classList.add('hide-cursor'), 2500);
             }
         }
 
@@ -1095,11 +2413,8 @@
 
         document.addEventListener('fullscreenchange', () => {
             updateFullscreenButton();
-            if (document.fullscreenElement) {
-                showCursor();
-            } else {
-                hideCursorReset();
-            }
+            if (document.fullscreenElement) showCursor();
+            else hideCursorReset();
         });
 
         // ========== CONTROLS ==========
@@ -1111,10 +2426,180 @@
         browseAllBtn.onclick = () => selectCategory('all');
         categoryFab.onclick = openModal;
         modalClose.onclick = closeModal;
+        editCategoriesBtn.onclick = showCategoryEditor;
+        settingsBtn.onclick = showSettingsModal;
 
         categoryModal.onclick = (e) => {
             if (e.target === categoryModal) closeModal();
         };
+
+        // ========== SETTINGS MODAL ==========
+        function showSettingsModal() {
+            playlistInfo.textContent = `${allChannels.length} channels loaded`;
+            settingsModal.classList.add('active');
+        }
+
+        function hideSettingsModal() {
+            settingsModal.classList.remove('active');
+        }
+
+        settingsModalClose.onclick = hideSettingsModal;
+        settingsModal.onclick = (e) => {
+            if (e.target === settingsModal) hideSettingsModal();
+        };
+
+        replacePlaylistBtn.onclick = () => {
+            hideSettingsModal();
+            showReplaceModal();
+        };
+
+        resetAppBtn.onclick = () => {
+            if (confirm('Reset app and clear all data? This cannot be undone.')) {
+                hideSettingsModal();
+                clearData();
+                showSetup();
+            }
+        };
+
+        // ========== REPLACE PLAYLIST MODAL ==========
+        function showReplaceModal() {
+            replaceUrlInput.value = '';
+            replaceModal.classList.add('active');
+        }
+
+        function hideReplaceModal() {
+            replaceModal.classList.remove('active');
+        }
+
+        replaceModalClose.onclick = hideReplaceModal;
+        replaceModal.onclick = (e) => {
+            if (e.target === replaceModal) hideReplaceModal();
+        };
+
+        replaceUploadZone.onclick = () => replaceFileInput.click();
+
+        replaceUploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            replaceUploadZone.classList.add('dragover');
+        });
+
+        replaceUploadZone.addEventListener('dragleave', () => {
+            replaceUploadZone.classList.remove('dragover');
+        });
+
+        replaceUploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            replaceUploadZone.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) processReplaceFile(file);
+        });
+
+        replaceFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) processReplaceFile(file);
+        });
+
+        replaceLoadUrlBtn.onclick = async () => {
+            const url = replaceUrlInput.value.trim();
+            if (!url) return;
+
+            try {
+                replaceLoadUrlBtn.textContent = 'Loading...';
+                replaceLoadUrlBtn.disabled = true;
+                const response = await fetch(url);
+                const content = await response.text();
+                processReplaceContent(content);
+            } catch (err) {
+                console.error('Failed to load URL:', err);
+                alert('Failed to load playlist from URL');
+            } finally {
+                replaceLoadUrlBtn.textContent = 'Load';
+                replaceLoadUrlBtn.disabled = false;
+            }
+        };
+
+        function processReplaceFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                processReplaceContent(e.target.result);
+            };
+            reader.readAsText(file);
+        }
+
+        function processReplaceContent(content) {
+            const newChannels = parseM3U(content);
+
+            if (newChannels.length === 0) {
+                alert('No channels found in playlist');
+                return;
+            }
+
+            const keepCategories = keepCategoriesCheckbox.checked;
+
+            if (keepCategories && categories.length > 0) {
+                // Keep existing categories, try to match new channels by group-title or channel number
+                const oldCategories = [...categories];
+
+                // Create a map of category name -> category for matching
+                const categoryByName = new Map();
+                oldCategories.forEach(cat => {
+                    categoryByName.set(cat.name.toLowerCase(), cat);
+                });
+
+                // Clear channel lists from categories
+                oldCategories.forEach(cat => {
+                    cat.channels = [];
+                });
+
+                // Assign new channels to existing categories
+                newChannels.forEach(ch => {
+                    const group = (ch.group || '').toLowerCase();
+                    const matchedCat = categoryByName.get(group);
+                    if (matchedCat) {
+                        matchedCat.channels.push(ch.number);
+                    }
+                });
+
+                // Find channels that weren't assigned to any category
+                const assignedNumbers = new Set();
+                oldCategories.forEach(cat => {
+                    cat.channels.forEach(num => assignedNumbers.add(num));
+                });
+
+                const unassignedChannels = newChannels.filter(ch => !assignedNumbers.has(ch.number));
+
+                // If there are unassigned channels, check if we need an "Uncategorized" category
+                if (unassignedChannels.length > 0) {
+                    let uncategorized = oldCategories.find(c => c.name.toLowerCase() === 'uncategorized');
+                    if (!uncategorized) {
+                        uncategorized = {
+                            id: crypto.randomUUID(),
+                            name: 'Uncategorized',
+                            emoji: '📺',
+                            channels: [],
+                            colors: COLOR_PALETTES[oldCategories.length % COLOR_PALETTES.length]
+                        };
+                        oldCategories.push(uncategorized);
+                    }
+                    unassignedChannels.forEach(ch => {
+                        uncategorized.channels.push(ch.number);
+                    });
+                }
+
+                // Remove empty categories (optional - keep them for now)
+                allChannels = newChannels;
+                categories = oldCategories;
+            } else {
+                // Fresh start - extract categories from new playlist
+                allChannels = newChannels;
+                categories = extractCategories(newChannels);
+            }
+
+            saveData();
+            hideReplaceModal();
+            renderSplash();
+            renderModal();
+        }
 
         // Search
         searchInput.oninput = (e) => {
@@ -1124,12 +2609,14 @@
                     ch.name.toLowerCase().includes(query) || ch.number.includes(query)
                 );
             } else {
-                const category = CATEGORIES.find(c => c.id === currentCategoryId);
-                const channelSet = new Set(category.channels.map(String));
-                filteredChannels = allChannels.filter(ch =>
-                    channelSet.has(ch.number) &&
-                    (ch.name.toLowerCase().includes(query) || ch.number.includes(query))
-                );
+                const category = categories.find(c => c.id === currentCategoryId);
+                if (category) {
+                    const channelSet = new Set(category.channels.map(String));
+                    filteredChannels = allChannels.filter(ch =>
+                        channelSet.has(ch.number) &&
+                        (ch.name.toLowerCase().includes(query) || ch.number.includes(query))
+                    );
+                }
             }
             selectedIndex = 0;
             renderChannels();
@@ -1137,7 +2624,7 @@
 
         // Keyboard navigation
         document.onkeydown = (e) => {
-            if (e.target === searchInput) return;
+            if (e.target.tagName === 'INPUT') return;
             if (!app.classList.contains('active')) return;
 
             switch(e.key) {
@@ -1184,17 +2671,14 @@
         };
 
         // ========== INIT ==========
-        async function init() {
-            renderSplash();
-
-            try {
-                const response = await fetch('/channels.m3u');
-                const content = await response.text();
-                allChannels = parseM3U(content);
-                console.log(`Loaded ${allChannels.length} channels`);
+        function init() {
+            if (loadData() && allChannels.length > 0) {
+                hideSetup();
+                showSplash();
+                renderSplash();
                 renderModal();
-            } catch (err) {
-                console.error('Failed to load channels:', err);
+            } else {
+                showSetup();
             }
         }
 
