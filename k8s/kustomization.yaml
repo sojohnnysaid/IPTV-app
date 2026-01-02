@@ -16,4 +16,4 @@ labels:
 images:
 - name: ghcr.io/sojohnnysaid/iptv-app
   newName: ghcr.io/sojohnnysaid/iptv-app
-  newTag: 9e95f07
+  newTag: 7dffe7d
