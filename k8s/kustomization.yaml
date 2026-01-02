@@ -4,17 +4,16 @@ kind: Kustomization
 namespace: iptv
 
 resources:
-  - namespace.yaml
-  - deployment.yaml
-  - service.yaml
-  - networkpolicy.yaml
+- namespace.yaml
+- deployment.yaml
+- service.yaml
+- networkpolicy.yaml
 
 labels:
-  - pairs:
-      app.kubernetes.io/part-of: iptv-app
-    includeSelectors: false
+- pairs:
+    app.kubernetes.io/part-of: iptv-app
 
 images:
-  - name: ghcr.io/sojohnnysaid/iptv-app
-    newName: ghcr.io/sojohnnysaid/iptv-app
-    newTag: latest
+- name: ghcr.io/sojohnnysaid/iptv-app
+  newName: ghcr.io/sojohnnysaid/iptv-app
+  newTag: 9e95f07
