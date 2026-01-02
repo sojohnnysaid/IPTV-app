@@ -13,6 +13,8 @@ spec:
       labels:
         app: iptv-app
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       tolerations:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists

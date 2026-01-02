@@ -2314,6 +2314,14 @@
             }
         }
 
+        // Proxy HTTP streams through server to avoid mixed content issues
+        function proxyUrl(url) {
+            if (url.startsWith('http://')) {
+                return '/proxy?url=' + encodeURIComponent(url);
+            }
+            return url;
+        }
+
         function playChannel(channel) {
             if (!channel) return;
 
@@ -2326,9 +2334,10 @@
 
             destroyPlayers();
 
-            const url = channel.url;
-            const isHLS = url.includes('.m3u8');
-            const isTS = url.includes('/ts/') || url.includes('.ts') || url.includes('/stream/');
+            const originalUrl = channel.url;
+            const url = proxyUrl(originalUrl);
+            const isHLS = originalUrl.includes('.m3u8');
+            const isTS = originalUrl.includes('/ts/') || originalUrl.includes('.ts') || originalUrl.includes('/stream/');
 
             if (isHLS && Hls.isSupported()) {
                 hls = new Hls({ enableWorker: true, lowLatencyMode: true });
