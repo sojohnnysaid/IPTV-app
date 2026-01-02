@@ -2315,9 +2315,10 @@
         }
 
         // Proxy HTTP streams through server to avoid mixed content issues
+        // Use absolute URL for Web Worker compatibility (mpegts.js)
         function proxyUrl(url) {
             if (url.startsWith('http://')) {
-                return '/proxy?url=' + encodeURIComponent(url);
+                return window.location.origin + '/proxy?url=' + encodeURIComponent(url);
             }
             return url;
         }
